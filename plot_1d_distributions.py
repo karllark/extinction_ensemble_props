@@ -23,7 +23,7 @@ if __name__ == "__main__":
         "--param",
         help="Parameter to use",
         default="B3",
-        choices=["C1", "C2", "C3", "B3", "C4", "x0", "gamma"],
+        choices=["C1", "C2", "C3", "B3", "C4", "x0", "gamma", "RV"],
     )
     parser.add_argument("--png", help="save figure as a png file", action="store_true")
     parser.add_argument("--pdf", help="save figure as a pdf file", action="store_true")
