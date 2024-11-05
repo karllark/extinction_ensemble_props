@@ -39,6 +39,8 @@ Plots
 plot_param_vs_param: plot combination of FM90 parameters E(B-V), A(V), E(B-V),
   N(HI), N(HI)/E(B-V), etc. versus each other depending on commandline parameters
 
+plot_1d_distributions: plot the 1D histograms of a FM90 parameter for specified
+  datasets
 
 Data
 ----
