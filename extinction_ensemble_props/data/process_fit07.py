@@ -4,14 +4,18 @@ from astropy.table import QTable
 import astropy.units as u
 
 if __name__ == "__main__":
-    #table = ascii.read("table3.dat", readme="ReadMe.txt")
+    # table = ascii.read("table3.dat", readme="ReadMe.txt")
 
-    tab3 = QTable.read("Fitzpatrick07/table3.dat",
-                       readme="Fitzpatrick07/ReadMe.txt",
-                       format="ascii.cds")
-    tab4 = QTable.read("Fitzpatrick07/table4.dat",
-                       readme="Fitzpatrick07/ReadMe.txt",
-                       format="ascii.cds")
+    tab3 = QTable.read(
+        "Fitzpatrick07/table3.dat",
+        readme="Fitzpatrick07/ReadMe.txt",
+        format="ascii.cds",
+    )
+    tab4 = QTable.read(
+        "Fitzpatrick07/table4.dat",
+        readme="Fitzpatrick07/ReadMe.txt",
+        format="ascii.cds",
+    )
 
     # build the table in the common format
     otab = QTable()
@@ -20,9 +24,11 @@ if __name__ == "__main__":
     otab["EBV_unc"] = np.array(tab3["e_E(B-V)"]) * u.mag
     otab["RV"] = np.array(tab4["R(V)"])
     otab["RV_unc"] = np.array(tab4["e_R(V)"])
-    
+
     otab["AV"] = otab["EBV"] * otab["RV"]
-    otab["AV_unc"] = otab["AV"] * np.sqrt(otab["EBV_unc"].value**2 + otab["RV_unc"]**2)
+    otab["AV_unc"] = otab["AV"] * np.sqrt(
+        otab["EBV_unc"].value ** 2 + otab["RV_unc"] ** 2
+    )
 
     otab["C1"] = np.array(tab4["c1"])
     otab["C1_unc"] = np.array(tab4["e_c1"])

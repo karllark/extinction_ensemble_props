@@ -20,7 +20,9 @@ if __name__ == "__main__":
         otab["RV"] = gor03["rv"]
         otab["RV_unc"] = gor03["rv_u"]
         otab["AV"] = otab["EBV"] * otab["RV"]
-        otab["AV_unc"] = otab["AV"] * np.sqrt(otab["EBV_unc"].value**2 + otab["RV_unc"]**2)
+        otab["AV_unc"] = otab["AV"] * np.sqrt(
+            otab["EBV_unc"].value ** 2 + otab["RV_unc"] ** 2
+        )
 
         otab["C1"] = np.array(gor03["c1"])
         otab["C1_unc"] = np.array(gor03["c1_u"])
@@ -38,4 +40,6 @@ if __name__ == "__main__":
         otab["NHI"] = np.array(gor03["nhi"]) * 1e21
         otab["NHI_unc"] = np.array(gor03["nhi_unc"]) * 1e21
 
-        otab.write(f"gor03_{oname}_ensemble_params.dat", format="ascii.ipac", overwrite=True)
+        otab.write(
+            f"gor03_{oname}_ensemble_params.dat", format="ascii.ipac", overwrite=True
+        )
