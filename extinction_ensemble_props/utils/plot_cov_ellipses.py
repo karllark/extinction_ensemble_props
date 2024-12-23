@@ -3,6 +3,7 @@ from math import sqrt, cos, sin
 from matplotlib.patches import Polygon
 from scipy.linalg import eigh
 
+
 # from Dries' dust_fuse_h2 repository
 def cov_ellipse(x, y, cov, num_sigma=1, **kwargs):
     """

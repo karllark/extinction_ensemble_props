@@ -24,13 +24,17 @@ for cfile in files:
 
     ref = importlib_resources.files("extinction_ensemble_props") / "data"
     with importlib_resources.as_file(ref) as data_path:
-        itab = QTable.read(f"{data_path}/{cfile}_ensemble_params.dat", format="ascii.ipac")
+        itab = QTable.read(
+            f"{data_path}/{cfile}_ensemble_params.dat", format="ascii.ipac"
+        )
     npts = len(itab)
 
     if "B3" not in itab.colnames:
         itab["B3"] = itab["C3"] / (itab["gamma"] ** 2)
         if "C3_unc" in itab.colnames:
-            itab["B3_unc"] = np.absolute(itab["B3"]) * np.sqrt(itab["C3_unc"] ** 2 +  2.0 * (itab["gamma_unc"].value ** 2))
+            itab["B3_unc"] = np.absolute(itab["B3"]) * np.sqrt(
+                itab["C3_unc"] ** 2 + 2.0 * (itab["gamma_unc"].value ** 2)
+            )
 
     c1 = np.concatenate((c1, itab["C1"].data))
     c1_unc = np.concatenate((c1_unc, itab["C1_unc"].data))
@@ -46,13 +50,15 @@ for cfile in files:
     rv_unc = np.concatenate((rv_unc, itab["RV_unc"].data))
     tval = itab["NHI"].data / itab["EBV"].data
     nhiebv = np.concatenate((nhiebv, tval))
-    tunc = tval * np.sqrt((itab["NHI_unc"].data / itab["NHI"].data)**2 
-                          + (np.array(itab["EBV_unc"].data) / itab["EBV"].data)**2)
+    tunc = tval * np.sqrt(
+        (itab["NHI_unc"].data / itab["NHI"].data) ** 2
+        + (np.array(itab["EBV_unc"].data) / itab["EBV"].data) ** 2
+    )
     nhiebv_unc = np.concatenate((nhiebv_unc, itab["NHI"].data / itab["EBV"].data))
 
 # for use in this program
 npts = len(c2)
-# X is your data table, where the features (bump strength, C2, B3, etc) are columns and 
+# X is your data table, where the features (bump strength, C2, B3, etc) are columns and
 # individual sightlines are rows
 X = np.zeros((npts, 14))
 X[:, 0] = c1
@@ -90,7 +96,7 @@ print(cov_X)
 # eigenvectors_X.shape should equal (N_features, N_features)
 eigenvalues_X, eigenvectors_X = np.linalg.eig(cov_X)
 
-# sort them in order from highest to lowest eigenvalues; now your highest eigenvalue  
+# sort them in order from highest to lowest eigenvalues; now your highest eigenvalue
 # matches the eigenvector that explains most of the variance, aka your first principal component
 # second highest eigenvalue is your second principal component, and etc
 order = np.argsort(np.abs(eigenvalues_X))[::-1]
@@ -103,4 +109,10 @@ principal_components = eigenvectors_X[:, order]
 explained_variance = eigenvalues_X / eigenvalues_X.sum()
 
 for k in range(len(explained_variance)):
-    print(f"Component #{k+1} explains {np.round(100*explained_variance[k], 3)} % of the variance, and is in the direction", principal_components[:, k])
+    print(
+        (
+            f"Component #{k+1} explains {np.round(100*explained_variance[k], 3)} %"
+            + "of the variance, and is in the direction"
+        ),
+        principal_components[:, k],
+    )

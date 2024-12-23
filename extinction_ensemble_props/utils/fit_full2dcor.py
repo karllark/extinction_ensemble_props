@@ -1,6 +1,5 @@
 import numpy as np
 from scipy.stats import multivariate_normal
-from scipy.special import erf
 
 import matplotlib.pyplot as plt
 from astropy.modeling import models
@@ -41,7 +40,7 @@ def lnlike_correlated(params, measured_vals, updated_model, cov, intinfo, x):
     #    needed for line integral
     lindist = np.sqrt(np.square(modx[1:] - modx[:-1]) + np.square(mody[1:] - mody[:-1]))
     # total distance - needed for normalizing line integral
-    totlength = np.sum(lindist)
+    # totlength = np.sum(lindist)
     lineintegral = 0.0
     for k, xval in enumerate(x):
         # define a multivariate normal/Gaussian for each data point
@@ -89,7 +88,7 @@ def lnlike_correlated_analytic(params, measured_vals, updated_model, cov, intinf
     slope = updated_model.slope
     intercept = updated_model.intercept
 
-    lineint_const = np.sqrt(3. ** 2 + (intercept + 3. * slope) ** 2)
+    lineint_const = np.sqrt(3.0**2 + (intercept + 3.0 * slope) ** 2)
 
     lineintegral = 0.0
     for k in range(len(x)):
@@ -98,16 +97,20 @@ def lnlike_correlated_analytic(params, measured_vals, updated_model, cov, intinf
         sigx = np.sqrt(cov[k, 0, 0])
         sigy = np.sqrt(cov[k, 1, 1])
         rho = cov[k, 0, 1] / (sigx * sigy)
-        onerhosqr = 1. - rho ** 2
-        A = 1. / (2. * np.pi * sigx * sigy * np.sqrt(onerhosqr))
-        B = 1. / (2. * onerhosqr * sigx ** 2)
-        C = 1. / (2. * onerhosqr * sigx * sigy)
-        D = 1. / (2. * onerhosqr * sigy ** 2)
+        onerhosqr = 1.0 - rho**2
+        A = 1.0 / (2.0 * np.pi * sigx * sigy * np.sqrt(onerhosqr))
+        B = 1.0 / (2.0 * onerhosqr * sigx**2)
+        C = 1.0 / (2.0 * onerhosqr * sigx * sigy)
+        D = 1.0 / (2.0 * onerhosqr * sigy**2)
 
         w = intercept + slope
-        H1 = B * mux ** 2 + C * mux * (intercept + muy) + D * (intercept ** 2 - intercept * muy + muy ** 2)
-        H2 = -2. * B * mux + C * (muy + w - intercept) + 2. * D * w * (intercept - w)
-        H3 = B - C * w + D * w ** 2
+        H1 = (
+            B * mux**2
+            + C * mux * (intercept + muy)
+            + D * (intercept**2 - intercept * muy + muy**2)
+        )
+        H2 = -2.0 * B * mux + C * (muy + w - intercept) + 2.0 * D * w * (intercept - w)
+        H3 = B - C * w + D * w**2
 
         # term1 = erf((2. * H3 * 0.3 + H2)/(2. * np.sqrt(H3)))   # from + limit
         # term2 = erf((2. * H3 * -0.3 + H2)/(2. * np.sqrt(H3)))  # from -limit
@@ -115,7 +118,7 @@ def lnlike_correlated_analytic(params, measured_vals, updated_model, cov, intinf
         #           / (2. * np.sqrt(H3)))
         # print(curint)
         # print(H1, H2, H3)
-        expval = (H2 ** 2 / (4. * H3)) - H1
+        expval = (H2**2 / (4.0 * H3)) - H1
         if expval < 500:
             curint = A * lineint_const * np.sqrt(np.pi) * np.exp(expval) / np.sqrt(H3)
         else:
@@ -244,8 +247,9 @@ def fit_2Dcorrelated_analytic_fast(x, y, covs, fit_model, intinfo):
     return fit_model
 
 
-def fit_2Dcorrelated_emcee(x, y, covs, fit_model, intinfo, nsteps=100, progress=False,
-                           sfilename=None):
+def fit_2Dcorrelated_emcee(
+    x, y, covs, fit_model, intinfo, nsteps=100, progress=False, sfilename=None
+):
     """
     Do emcee based sampling with correlated lnlike function.
     """
@@ -264,9 +268,12 @@ def fit_2Dcorrelated_emcee(x, y, covs, fit_model, intinfo, nsteps=100, progress=
         backend = None
 
     sampler = emcee.EnsembleSampler(
-        nwalkers, ndim, lnlike_correlated_fast, args=(datamod, fit_model, intinfo),
+        nwalkers,
+        ndim,
+        lnlike_correlated_fast,
+        args=(datamod, fit_model, intinfo),
         # nwalkers, ndim, lnlike_correlated_analytic, args=(y, fit_model, covs, intinfo, x),
-        backend=backend
+        backend=backend,
     )
     sampler.run_mcmc(pos, nsteps, progress=progress)
 

@@ -9,7 +9,6 @@ from astropy.modeling import models, fitting
 from astropy.stats import sigma_clip
 
 from extinction_ensemble_props.utils.fit_full2dcor import lnlike_correlated
-from extinction_ensemble_props.utils.plot_cov_ellipses import draw_ellipses
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -81,7 +80,9 @@ if __name__ == "__main__":
         allnames.append(cset)
         ref = importlib_resources.files("extinction_ensemble_props") / "data"
         with importlib_resources.as_file(ref) as data_path:
-            tdata = QTable.read(f"{data_path}/{cset}_ensemble_params.dat", format="ascii.ipac")
+            tdata = QTable.read(
+                f"{data_path}/{cset}_ensemble_params.dat", format="ascii.ipac"
+            )
 
         # now add data if missing and derivable from expected columns
         if "B3" not in tdata.colnames:
@@ -373,11 +374,15 @@ if __name__ == "__main__":
                     gdratio = summarystats[cname][f"NHI_{xptags[i]}"][0]
                     gdratio_unc = summarystats[cname][f"NHI_{xptags[i]}"][2]
                     line_orig = models.Linear1D(slope=gdratio, intercept=0.0)
+                    tlabel = (
+                        rf"$N(HI)/{xplabels[i]} = {gdratio:.2f} \pm {gdratio_unc:.2f}$"
+                        + ": {clabel}"
+                    )
                     tax.plot(
                         x,
                         line_orig(x),
                         linestyle=":",
-                        label=rf"$N(HI)/{xplabels[i]} = {gdratio:.2f} \pm {gdratio_unc:.2f}$: {clabel}",
+                        label=tlabel,
                         color=colstr,
                     )
                     tax.legend(fontsize=0.7 * fontsize, loc="upper right")
