@@ -1,4 +1,5 @@
-import sys
+import importlib.resources as importlib_resources
+
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
@@ -76,9 +77,11 @@ if __name__ == "__main__":
     alldata = []
     summarystats = {}
     for cset in args.datasets:
-        fname = f"data/{cset}_ensemble_params.dat"
+
         allnames.append(cset)
-        tdata = QTable.read(fname, format="ascii.ipac")
+        ref = importlib_resources.files("extinction_ensemble_props") / "data"
+        with importlib_resources.as_file(ref) as data_path:
+            tdata = QTable.read(f"{data_path}/{cset}_ensemble_params.dat", format="ascii.ipac")
 
         # now add data if missing and derivable from expected columns
         if "B3" not in tdata.colnames:
