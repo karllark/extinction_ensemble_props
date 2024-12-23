@@ -32,7 +32,10 @@ test = [
 docs = [
     "sphinx",
     "sphinx-automodapi",
+    "sphinx-astropy",
+    "numpydoc",
 ]
+
 [project.urls]
 repository = "https://github.com/karllark/extinction_ensemble_props"
 
