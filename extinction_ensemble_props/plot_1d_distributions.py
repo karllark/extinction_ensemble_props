@@ -3,10 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from astropy.table import QTable
 from astropy.modeling import models, fitting
-from astropy.stats import sigma_clip
 
-from utils.fit_full2dcor import lnlike_correlated
-from utils.plot_cov_ellipses import draw_ellipses
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -38,7 +35,11 @@ if __name__ == "__main__":
         "gor24_smc_nobump": ("bo", 0.5, "SMC: Weak/absent 2175 A bump"),
         "gor24_smc_bump": ("rP", 0.5, "SMC: Significant 2175 A bump"),
         "gor24_smc_flat": ("cs", 0.5, "SMC: Flat"),
-        "gor24_smc_lowebv": (("tab:brown", "v"), 0.5, r"SMC: $E(B-V)_\mathrm{SMC} < 0.1$"),
+        "gor24_smc_lowebv": (
+            ("tab:brown", "v"),
+            0.5,
+            r"SMC: $E(B-V)_\mathrm{SMC} < 0.1$",
+        ),
     }
 
     fsize = (12, 8)
@@ -51,7 +52,6 @@ if __name__ == "__main__":
     plt.rc("xtick.major", width=2)
     plt.rc("ytick.major", width=2)
 
-
     for cset in args.datasets:
         ptype, palpha, clabel = ptypes[cset]
 
@@ -62,7 +62,9 @@ if __name__ == "__main__":
         if "B3" not in tdata.colnames:
             tdata["B3"] = tdata["C3"] / (tdata["gamma"].value ** 2)
             if "C3_unc" in tdata.colnames:
-                tdata["B3_unc"] = np.absolute(tdata["B3"]) * np.sqrt(tdata["C3_unc"] ** 2 +  2.0 * (tdata["gamma_unc"].value ** 2))
+                tdata["B3_unc"] = np.absolute(tdata["B3"]) * np.sqrt(
+                    tdata["C3_unc"] ** 2 + 2.0 * (tdata["gamma_unc"].value ** 2)
+                )
             # temp fix until LMC and MW GCC09 can be refit with B3
             # C3 and gamma strongly correlated
             tdata["B3_unc"] *= 0.2
@@ -71,15 +73,21 @@ if __name__ == "__main__":
         if hasattr(medval, "value"):
             medval = medval.value
 
-        hinfo = ax.hist(tdata[args.param], bins=20, color=ptype[0], label=clabel, alpha=palpha)
+        hinfo = ax.hist(
+            tdata[args.param], bins=20, color=ptype[0], label=clabel, alpha=palpha
+        )
         y = hinfo[0]
         x = hinfo[1]
-        x = 0.5*(x[0:-1] + x[1:])
+        x = 0.5 * (x[0:-1] + x[1:])
 
-        g_init = models.Gaussian1D(amplitude=50., mean=medval, stddev=1.)
+        g_init = models.Gaussian1D(amplitude=50.0, mean=medval, stddev=1.0)
         fit_g = fitting.TRFLSQFitter()
         g = fit_g(g_init, x, y, maxiter=100000)
-        ax.plot(x, g(x), label=rf"{clabel} model (m={g.mean.value:.3f}, $\sigma$={g.stddev.value:.3f})")
+        ax.plot(
+            x,
+            g(x),
+            label=rf"{clabel} model (m={g.mean.value:.3f}, $\sigma$={g.stddev.value:.3f})",
+        )
 
     ax.set_xlabel(args.param)
     ax.set_ylabel("#")
