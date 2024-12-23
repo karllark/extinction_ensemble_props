@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "extinction_ensemble_props"
 description = "Plot the ensemble properties of dust extinction"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 readme = { file = "README.rst", content-type = "text/x-rst" }
 license = { file = "licenses/LICENSE.rst" }
 authors = [
