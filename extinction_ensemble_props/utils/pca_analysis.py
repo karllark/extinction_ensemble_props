@@ -1,7 +1,9 @@
+import importlib.resources as importlib_resources
+
 import numpy as np
 from astropy.table import QTable
 
-files = ["gor09", "gor03_lmc", "gor24_smc_nolowebv"]
+files = ["gor09", "gor03_lmc", "gor24_smc"]
 # files = ["gor09"]
 
 c1 = []
@@ -20,7 +22,9 @@ rv_unc = []
 nhiebv_unc = []
 for cfile in files:
 
-    itab = QTable.read(f"data/{cfile}_ensemble_params.dat", format="ascii.ipac")
+    ref = importlib_resources.files("extinction_ensemble_props") / "data"
+    with importlib_resources.as_file(ref) as data_path:
+        itab = QTable.read(f"{data_path}/{cfile}_ensemble_params.dat", format="ascii.ipac")
     npts = len(itab)
 
     if "B3" not in itab.colnames:

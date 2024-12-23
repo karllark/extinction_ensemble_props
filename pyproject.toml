@@ -1,0 +1,98 @@
+[build-system]
+requires = [
+  "setuptools>=62.1",
+  "setuptools_scm[toml]>=6.2",
+  "wheel",]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "extinction_ensemble_props"
+description = "Plot the ensemble properties of dust extinction"
+requires-python = ">=3.10"
+readme = { file = "README.rst", content-type = "text/x-rst" }
+license = { file = "licenses/LICENSE.rst" }
+authors = [
+  { name = "Karl D. Gordon", email = "kgordon@stsci.edu" },
+]
+dependencies = [
+    "numpy",
+    "scipy",
+    "astropy",
+    "matplotlib",
+    "emcee",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-doctestplus",
+    "pytest-cov"
+]
+docs = [
+    "sphinx",
+    "sphinx-automodapi",
+    "sphinx-astropy",
+    "numpydoc",
+]
+
+[project.urls]
+repository = "https://github.com/karllark/extinction_ensemble_props"
+
+[tool.setuptools]
+zip-safe = false
+include-package-data = true
+
+[tool.setuptools.packages.find]
+exclude = ["extinction_ensemble_props._dev*"]
+
+[tool.setuptools_scm]
+write_to = "extinction_ensemble_props/_version.py"
+
+[tool.pytest.ini_options]
+testpaths = [
+  "extinction_ensemble_props",
+  "docs",
+]
+doctest_plus = "enabled"
+text_file_format = "rst"
+addopts = "--doctest-rst"
+
+[tool.coverage.run]
+omit = [
+ "extinction_ensemble_props/__init*",
+ "extinction_ensemble_props/conftest.py",
+ "extinction_ensemble_props/*setup_package*",
+ "extinction_ensemble_props/tests/*",
+ "extinction_ensemble_props/*/tests/*",
+ "extinction_ensemble_props/extern/*",
+ "extinction_ensemble_props/version*",
+ "*/extinction_ensemble_props/__init*",
+ "*/extinction_ensemble_props/conftest.py",
+ "*/extinction_ensemble_props/*setup_package*",
+ "*/extinction_ensemble_props/tests/*",
+ "*/extinction_ensemble_props/*/tests/*",
+ "*/extinction_ensemble_props/extern/*",
+ "*/extinction_ensemble_props/version*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+  # Have to re-enable the standard pragma
+  "pragma: no cover",
+  # Don't complain about packages we have installed
+  "except ImportError",
+  # Don't complain if tests don't hit assertions
+  "raise AssertionError",
+  "raise NotImplementedError",
+  # Don't complain about script hooks
+  "def main(.*):",
+  # Ignore branches that don't pertain to this version of Python
+  "pragma: py{ignore_python_version}",
+  # Don't complain about IPython completion helper
+  "def _ipython_key_completions_",
+  # typing.TYPE_CHECKING is False at runtime
+  "if TYPE_CHECKING:",
+  # Ignore typing overloads
+  "@overload",
+]

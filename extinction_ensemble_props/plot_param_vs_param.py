@@ -1,4 +1,5 @@
-import sys
+import importlib.resources as importlib_resources
+
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
@@ -7,8 +8,8 @@ from astropy.table import QTable
 from astropy.modeling import models, fitting
 from astropy.stats import sigma_clip
 
-from utils.fit_full2dcor import lnlike_correlated
-from utils.plot_cov_ellipses import draw_ellipses
+from extinction_ensemble_props.utils.fit_full2dcor import lnlike_correlated
+from extinction_ensemble_props.utils.plot_cov_ellipses import draw_ellipses
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -20,19 +21,33 @@ if __name__ == "__main__":
         choices=["val04", "gor03_smc", "gor03_lmc", "fit07", "gor09", "gor24_smc"],
     )
     parser.add_argument("--sprops", help="sample properties", action="store_true")
-    parser.add_argument("--spropsebv", help="sample properties versus ebv", action="store_true")
-    parser.add_argument("--spropsav", help="sample properties versus av", action="store_true")
-    parser.add_argument("--gdprops", help="N(HI)/E(B-V) properties", action="store_true")
-    parser.add_argument("--fm90main", help="only plot the main FM90 parameters", action="store_true")
+    parser.add_argument(
+        "--spropsebv", help="sample properties versus ebv", action="store_true"
+    )
+    parser.add_argument(
+        "--spropsav", help="sample properties versus av", action="store_true"
+    )
+    parser.add_argument(
+        "--gdprops", help="N(HI)/E(B-V) properties", action="store_true"
+    )
+    parser.add_argument(
+        "--fm90main", help="only plot the main FM90 parameters", action="store_true"
+    )
     parser.add_argument("--ebv", help="plot FM90 versus E(B-V)", action="store_true")
     parser.add_argument("--av", help="plot FM90 versus A(V)", action="store_true")
     parser.add_argument("--nhi", help="plot FM90 versus N(HI)", action="store_true")
     parser.add_argument("--rv", help="plot FM90 versus R(V)", action="store_true")
     parser.add_argument("--irv", help="plot FM90 versus 1/R(V)", action="store_true")
     parser.add_argument("--nouncs", help="do not plot uncs", action="store_true")
-    parser.add_argument("--ebvcut", help="only plot data equal or above E(B-V) value",
-                        type=float, default=0.0)
-    parser.add_argument("--showstats", help="print summary stats for each dataset", action="store_true")    
+    parser.add_argument(
+        "--ebvcut",
+        help="only plot data equal or above E(B-V) value",
+        type=float,
+        default=0.0,
+    )
+    parser.add_argument(
+        "--showstats", help="print summary stats for each dataset", action="store_true"
+    )
     parser.add_argument("--fit", help="Fit lines for some plots", action="store_true")
     parser.add_argument("--paper", help="portrait format", action="store_true")
     parser.add_argument("--png", help="save figure as a png file", action="store_true")
@@ -50,7 +65,11 @@ if __name__ == "__main__":
         "gor24_smc_nobump": ("bo", 0.5, "SMC: Weak/absent 2175 A bump"),
         "gor24_smc_bump": ("rP", 0.5, "SMC: Significant 2175 A bump"),
         "gor24_smc_flat": ("cs", 0.5, "SMC: Flat"),
-        "gor24_smc_lowebv": (("tab:brown", "v"), 0.5, r"SMC: $E(B-V)_\mathrm{SMC} < 0.1$"),
+        "gor24_smc_lowebv": (
+            ("tab:brown", "v"),
+            0.5,
+            r"SMC: $E(B-V)_\mathrm{SMC} < 0.1$",
+        ),
     }
 
     # get the data to plot
@@ -58,22 +77,26 @@ if __name__ == "__main__":
     alldata = []
     summarystats = {}
     for cset in args.datasets:
-        fname = f"data/{cset}_ensemble_params.dat"
+
         allnames.append(cset)
-        tdata = QTable.read(fname, format="ascii.ipac")
+        ref = importlib_resources.files("extinction_ensemble_props") / "data"
+        with importlib_resources.as_file(ref) as data_path:
+            tdata = QTable.read(f"{data_path}/{cset}_ensemble_params.dat", format="ascii.ipac")
 
         # now add data if missing and derivable from expected columns
         if "B3" not in tdata.colnames:
             tdata["B3"] = tdata["C3"] / (tdata["gamma"] ** 2)
             if "C3_unc" in tdata.colnames:
-                tdata["B3_unc"] = np.absolute(tdata["B3"]) * np.sqrt(tdata["C3_unc"] ** 2 +  2.0 * (tdata["gamma_unc"].value ** 2))
+                tdata["B3_unc"] = np.absolute(tdata["B3"]) * np.sqrt(
+                    tdata["C3_unc"] ** 2 + 2.0 * (tdata["gamma_unc"].value ** 2)
+                )
             # temp fix until LMC and MW GCC09 can be refit with B3
             # C3 and gamma strongly correlated
             if args.fit:
                 tdata["B3_unc"] *= 0.2
 
         if "IRV" not in tdata.colnames:
-            tdata["IRV"] = 1. / tdata["RV"]
+            tdata["IRV"] = 1.0 / tdata["RV"]
             tdata["IRV_unc"] = tdata["IRV"] * tdata["RV_unc"] / tdata["RV"]
 
         # divide by 10^21 to make easier to undertand and fit numbers
@@ -83,12 +106,16 @@ if __name__ == "__main__":
 
         if ("NHI" in tdata.colnames) & ("NHI_EBV" not in tdata.colnames):
             tdata["NHI_EBV"] = tdata["NHI"] / tdata["EBV"]
-            tdata["NHI_EBV_unc"] = (tdata["NHI_unc"] / tdata["NHI"]) **2 + (tdata["EBV_unc"] / tdata["EBV"]) **2
+            tdata["NHI_EBV_unc"] = (tdata["NHI_unc"] / tdata["NHI"]) ** 2 + (
+                tdata["EBV_unc"] / tdata["EBV"]
+            ) ** 2
             tdata["NHI_EBV_unc"] = tdata["NHI_EBV"] * np.sqrt(tdata["NHI_EBV_unc"])
 
         if ("NHI" in tdata.colnames) & ("NHI_AV" not in tdata.colnames):
             tdata["NHI_AV"] = tdata["NHI"] / tdata["AV"]
-            tdata["NHI_AV_unc"] = (tdata["NHI_unc"] / tdata["NHI"]) **2 + (tdata["AV_unc"] / tdata["AV"]) **2
+            tdata["NHI_AV_unc"] = (tdata["NHI_unc"] / tdata["NHI"]) ** 2 + (
+                tdata["AV_unc"] / tdata["AV"]
+            ) ** 2
             tdata["NHI_AV_unc"] = tdata["NHI_AV"] * np.sqrt(tdata["NHI_AV_unc"])
 
         if args.ebvcut > 0.0:
@@ -103,7 +130,11 @@ if __name__ == "__main__":
             if ("name" not in ccol.lower()) & ("unc" not in ccol.lower()):
                 ave = np.average(tdata[ccol].data)
                 std = np.std(tdata[ccol].data)
-                summarystats[cset][ccol] = (ave, std, std/np.sqrt(len(tdata[ccol].data)))
+                summarystats[cset][ccol] = (
+                    ave,
+                    std,
+                    std / np.sqrt(len(tdata[ccol].data)),
+                )
                 if args.showstats:
                     print(f"{ccol}: ave = {ave} +/- {std}")
 
@@ -128,8 +159,14 @@ if __name__ == "__main__":
         pi = [0, 1, 3, 4, 2, 5]
 
     # default values
-    yplabels = ["$C_1$ = UV intercept", "$C_2$ = UV slope", "$B_3$ = bump amplitude",
-                "$C_4$ = FUV rise amplitude", "$x_o$ = bump center", r"$\gamma$ = bump width"]
+    yplabels = [
+        "$C_1$ = UV intercept",
+        "$C_2$ = UV slope",
+        "$B_3$ = bump amplitude",
+        "$C_4$ = FUV rise amplitude",
+        "$x_o$ = bump center",
+        r"$\gamma$ = bump width",
+    ]
     yptags = ["C1", "C2", "B3", "C4", "x0", "gamma"]
     fitlines = [False] * (nrows * ncols)
     show_gd = None
@@ -141,7 +178,12 @@ if __name__ == "__main__":
         pi = [0, 1, 2, 3]
         xplabels = ["$E(B-V)$", "$A(V)$", "$E(B-V)$", "$A(V)$"]
         xptags = ["EBV", "AV", "EBV", "AV"]
-        yplabels = ["$R(V)$", "$R(V)$", "$N(HI)/E(B-V)$ [$10^{21}~H~cm^{-2}~mag^{-1}$]", "$N(HI)/A(V)$ [$10^{21}~H~cm^{-2}~H~cm^{-2}~mag^{-1}$]"]
+        yplabels = [
+            "$R(V)$",
+            "$R(V)$",
+            "$N(HI)/E(B-V)$ [$10^{21}~H~cm^{-2}~mag^{-1}$]",
+            "$N(HI)/A(V)$ [$10^{21}~H~cm^{-2}~H~cm^{-2}~mag^{-1}$]",
+        ]
         yptags = ["RV", "RV", "NHI_EBV", "NHI_AV"]
     elif args.spropsebv:
         ostr = "sprops_ebv"
@@ -171,10 +213,19 @@ if __name__ == "__main__":
         nrows = 2
         ncols = 2
         pi = [0, 1, 2, 3]
-        xplabels = ["$A(V)$", "$C_2$ = UV slope", "$B_3$ = bump amplitude", "$C_4$ = FUV rise amplitude"]
+        xplabels = [
+            "$A(V)$",
+            "$C_2$ = UV slope",
+            "$B_3$ = bump amplitude",
+            "$C_4$ = FUV rise amplitude",
+        ]
         xptags = ["AV", "C2", "B3", "C4"]
-        yplabels = ["$N(HI)/A(V)$ [$10^{21}~H~cm^{-2}~mag^{-1}$]", "$N(HI)/A(V)$ [$10^{21}~H~cm^{-2}~mag^{-1}$]",
-                    "$N(HI)/A(V)$ [$10^{21}~H~cm^{-2}~mag^{-1}$]", "$N(HI)/A(V)$ [$10^{21}~H~cm^{-2}~mag^{-1}$]"]
+        yplabels = [
+            "$N(HI)/A(V)$ [$10^{21}~H~cm^{-2}~mag^{-1}$]",
+            "$N(HI)/A(V)$ [$10^{21}~H~cm^{-2}~mag^{-1}$]",
+            "$N(HI)/A(V)$ [$10^{21}~H~cm^{-2}~mag^{-1}$]",
+            "$N(HI)/A(V)$ [$10^{21}~H~cm^{-2}~mag^{-1}$]",
+        ]
         yptags = ["NHI_AV", "NHI_AV", "NHI_AV", "NHI_AV"]
         fitlines = [False, True, True, True]
     elif args.ebv:
@@ -209,20 +260,39 @@ if __name__ == "__main__":
         ncols = 2
         pi = [0, 1, 2, 3]
         fitlines = [True] * nrows * ncols
-        xplabels = ["$C_2$ = UV slope", "$C_2$ = UV slope", "$C_2$ = UV slope", "$C_4$ = FUV rise amplitude"]
+        xplabels = [
+            "$C_2$ = UV slope",
+            "$C_2$ = UV slope",
+            "$C_2$ = UV slope",
+            "$C_4$ = FUV rise amplitude",
+        ]
         xptags = ["C2", "C2", "C2", "C4"]
-        yplabels = ["$C_1$ = UV intercept", "$B_3$ = bump amplitude", "$C_4$ = FUV rise amplitude",
-                    "$B_3$ = bump amplitude"]
+        yplabels = [
+            "$C_1$ = UV intercept",
+            "$B_3$ = bump amplitude",
+            "$C_4$ = FUV rise amplitude",
+            "$B_3$ = bump amplitude",
+        ]
         yptags = ["C1", "B3", "C4", "B3"]
     else:  # plot fm90 vs fm90
         ostr = "fm90"
-        xplabels = ["$C_2$ = UV slope", "$C_2$ = UV slope", "$C_2$ = UV slope", "$C_2$ = UV slope",
-                    "$B_3$ = bump amplitude", "$x_o$ = bump center [$\mu$m$^{-1}$]"]
+        xplabels = [
+            "$C_2$ = UV slope",
+            "$C_2$ = UV slope",
+            "$C_2$ = UV slope",
+            "$C_2$ = UV slope",
+            r"$B_3$ = bump amplitude",
+            r"$x_o$ = bump center [$\mu$m$^{-1}$]",
+        ]
         xptags = ["C2", "C2", "C2", "C2", "B3", "x0"]
-        yplabels = ["$C_1$ = UV intercept", "$B_3$ = bump amplitude",
-                    "$C_4$ = FUV rise amplitude", "$x_0$ = bump center [$\mu$m$^{-1}$]",
-                    r"$\gamma$ = bump width [$\mu$m$^{-1}$]",
-                    "$\gamma$ = bump width [$\mu$m$^{-1}$]"]
+        yplabels = [
+            "$C_1$ = UV intercept",
+            "$B_3$ = bump amplitude",
+            "$C_4$ = FUV rise amplitude",
+            r"$x_0$ = bump center [$\mu$m$^{-1}$]",
+            r"$\gamma$ = bump width [$\mu$m$^{-1}$]",
+            r"$\gamma$ = bump width [$\mu$m$^{-1}$]",
+        ]
         yptags = ["C1", "B3", "C4", "x0", "gamma", "gamma"]
 
     fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=fsize)
@@ -290,7 +360,11 @@ if __name__ == "__main__":
             )
 
             # special code to fit for the gas-to-dust ratio
-            if (xptags[i] in ["EBV", "AV"]) & (yptags[i] == "NHI") & (show_gd is not None):
+            if (
+                (xptags[i] in ["EBV", "AV"])
+                & (yptags[i] == "NHI")
+                & (show_gd is not None)
+            ):
 
                 if show_gd[i] & (len(xdata) > 10):
                     xlim = tax.get_xlim()
@@ -299,14 +373,20 @@ if __name__ == "__main__":
                     gdratio = summarystats[cname][f"NHI_{xptags[i]}"][0]
                     gdratio_unc = summarystats[cname][f"NHI_{xptags[i]}"][2]
                     line_orig = models.Linear1D(slope=gdratio, intercept=0.0)
-                    tax.plot(x, line_orig(x), linestyle=":", label=f"$N(HI)/{xplabels[i]} = {gdratio:.2f} \pm {gdratio_unc:.2f}$: {clabel}", color=colstr)
-                    tax.legend(fontsize=0.7*fontsize, loc="upper right")
+                    tax.plot(
+                        x,
+                        line_orig(x),
+                        linestyle=":",
+                        label=rf"$N(HI)/{xplabels[i]} = {gdratio:.2f} \pm {gdratio_unc:.2f}$: {clabel}",
+                        color=colstr,
+                    )
+                    tax.legend(fontsize=0.7 * fontsize, loc="upper right")
                 if show_gd[i] & (cname == allnames[-1]):
                     tax.set_ylim(ylim)
                     # temp hack for SMC UV paper
                     if xptags[i] == "AV":
                         tax.set_xlim(xlim[0], 3.5)
-                        tax.set_ylim(ylim[0], 22.)
+                        tax.set_ylim(ylim[0], 22.0)
 
         tax.set_xlabel(xplabels[i], fontsize=1.3 * fontsize)
         tax.set_ylabel(yplabels[i], fontsize=1.3 * fontsize)
@@ -320,12 +400,12 @@ if __name__ == "__main__":
         # needed for plotting and fitting
         covtags = ["C1", "C2", "B3", "C4"]
         for k in range(npts):
-            #if (xptags[i] in covtags) & (yptags[i] in covtags):
+            # if (xptags[i] in covtags) & (yptags[i] in covtags):
             #    # approximation following Gordon et al. (2023)
             #    cov_xy = xvals[k] * yvals[k] * ((ebv_unc[k] / ebv[k]) ** 2)
             #    corr_xy = np.min([cov_xy / (xvals_unc[k] * yvals_unc[k]), 0.99])
             #    cov_xy *= xvals_unc[k] * yvals_unc[k]
-            #else:
+            # else:
             #    cov_xy = 0.0
             cov_xy = 0.0
             covs[k, 0, 0] = xvals_unc[k] ** 2
@@ -343,49 +423,60 @@ if __name__ == "__main__":
             #     print("cond")
             #     print(xptags[i], yptags[i])
             #     print(k, np.all(np.linalg.cond(covs[k, :, :])))
-            #     print(covs[k, :, :])   
+            #     print(covs[k, :, :])
 
-        #draw_ellipses(
+        # draw_ellipses(
         #    tax, xvals, yvals, covs, color="black", alpha=0.1
-        #)
+        # )
 
         if fitlines[i] & args.fit:
-      
+
             xlim = tax.get_xlim()
             ylim = tax.get_ylim()
             dxlim = xlim[1] - xlim[0]
-            intinfo = [xlim[0] - dxlim, xlim[1] + dxlim, dxlim/20]
+            intinfo = [xlim[0] - dxlim, xlim[1] + dxlim, dxlim / 20]
 
             def nll(*args):
                 return -lnlike_correlated(*args)
 
             x = np.arange(xlim[0], xlim[1], 0.01)
-            line_orig = models.Linear1D(slope=-10., intercept=20.)
+            line_orig = models.Linear1D(slope=-10.0, intercept=20.0)
             fit = fitting.LinearLSQFitter()
-            or_fit = fitting.FittingWithOutlierRemoval(fit, sigma_clip, niter=3, sigma=3.0)
-            fitted_line= fit(line_orig, xvals, yvals, weights=1/yvals_unc)
+            or_fit = fitting.FittingWithOutlierRemoval(
+                fit, sigma_clip, niter=3, sigma=3.0
+            )
+            fitted_line = fit(line_orig, xvals, yvals, weights=1 / yvals_unc)
             nparams = fitted_line.parameters
-            #tax.plot(x, fitted_line(x), "k:", label=f"Fit: {nparams[1]:.2f} + {nparams[0]:.2f}x")
+            # tax.plot(x, fitted_line(x), "k:", label=f"Fit: {nparams[1]:.2f} + {nparams[0]:.2f}x")
 
-            #fitted_line, mask = or_fit(fitted_line, xvals, yvals, weights=1/yvals_unc)
+            # fitted_line, mask = or_fit(fitted_line, xvals, yvals, weights=1/yvals_unc)
             # print(fitted_line.parameters)
 
-            #masked_data = np.ma.masked_array(yvals, mask=~mask)
-            #print(xvals[mask])
-            #tax.plot(xvals, masked_data, "ko", fillstyle="none", ms=10, label="Not used in fit")
+            # masked_data = np.ma.masked_array(yvals, mask=~mask)
+            # print(xvals[mask])
+            # tax.plot(xvals, masked_data, "ko", fillstyle="none", ms=10, label="Not used in fit")
 
-            result = op.minimize(nll, fitted_line.parameters, args=(yvals, fitted_line, covs, intinfo, xvals))
+            result = op.minimize(
+                nll,
+                fitted_line.parameters,
+                args=(yvals, fitted_line, covs, intinfo, xvals),
+            )
             nparams = result["x"]
             # print(nparams)
             fitted_line = models.Linear1D(slope=nparams[0], intercept=nparams[1])
-            tax.plot(x, fitted_line(x), "k--", label=f"Fit: {nparams[1]:.2f} + {nparams[0]:.2f}x")
+            tax.plot(
+                x,
+                fitted_line(x),
+                "k--",
+                label=f"Fit: {nparams[1]:.2f} + {nparams[0]:.2f}x",
+            )
 
             tax.set_ylim(ylim)
 
-            tax.legend(fontsize=0.7*fontsize)
+            tax.legend(fontsize=0.7 * fontsize)
 
-        elif i == 0: 
-            tax.legend(fontsize=0.7*fontsize)
+        elif i == 0:
+            tax.legend(fontsize=0.7 * fontsize)
 
     fig.tight_layout()
 
