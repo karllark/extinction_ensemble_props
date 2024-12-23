@@ -1,8 +1,6 @@
-import sys
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
-import scipy.optimize as op
 from astropy.table import QTable
 from astropy.modeling import models, fitting
 from astropy.stats import sigma_clip
