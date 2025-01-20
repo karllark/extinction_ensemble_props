@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from astropy.table import QTable
 from astropy.modeling import models, fitting
 
-from extinction_ensemble_props.helpers import ptypes
+from extinction_ensemble_props.helpers import poss_params, param_labels, ptypes, get_dataset
 
 __all__ = ["plot_1d_dist"]
 
@@ -36,21 +36,7 @@ def plot_1d_dist(ax, datasets, param, fit=False):
     for cset in datasets:
         ptype, palpha, clabel = ptypes[cset]
 
-        with importlib_resources.as_file(ref) as data_path:
-            tdata = QTable.read(
-                f"{data_path}/{cset}_ensemble_params.dat", format="ascii.ipac"
-            )
-
-        # now add data if missing and derivable from expected columns
-        if "B3" not in tdata.colnames:
-            tdata["B3"] = tdata["C3"] / (tdata["gamma"].value ** 2)
-            if "C3_unc" in tdata.colnames:
-                tdata["B3_unc"] = np.absolute(tdata["B3"]) * np.sqrt(
-                    tdata["C3_unc"] ** 2 + 2.0 * (tdata["gamma_unc"].value ** 2)
-                )
-            # temp fix until LMC and MW GCC09 can be refit with B3
-            # C3 and gamma strongly correlated
-            tdata["B3_unc"] *= 0.2
+        tdata = get_dataset(cset)
 
         medval = np.median(tdata[param])
         if hasattr(medval, "value"):
@@ -75,7 +61,7 @@ def plot_1d_dist(ax, datasets, param, fit=False):
                 alpha=palpha,
             )
 
-    ax.set_xlabel(param)
+    ax.set_xlabel(param_labels[param])
     ax.set_ylabel("#")
 
     ax.legend()
@@ -97,7 +83,7 @@ if __name__ == "__main__":
         "--param",
         help="Parameter to use",
         default="B3",
-        choices=["C1", "C2", "C3", "B3", "C4", "x0", "gamma", "RV", "AV", "EBV"],
+        choices=poss_params,
     )
     parser.add_argument(
         "--fit",
