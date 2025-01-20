@@ -33,7 +33,7 @@ def plot_1d_dist(ax, datasets, param, fit=False):
 
         tdata = get_dataset(cset)
 
-        if param not in list(cdata.colnames):
+        if param not in list(tdata.colnames):
             raise ValueError(f"param {param} not present in {cset} dataset.")
 
         medval = np.median(tdata[param])
