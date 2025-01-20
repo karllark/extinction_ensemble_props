@@ -13,7 +13,8 @@ __all__ = ["plot_1d_dist"]
 
 def plot_1d_dist(ax, datasets, param, fit=False):
     """
-    Plot the 1D distribution of a a single dust property.  Multiple datasets can be plotted together.
+    Plot the 1D distribution of a a single dust property.
+    Multiple datasets can be plotted together.
     Optionally, include a Gaussian fit to the distribution of each dataset.
 
     Parameters
@@ -119,7 +120,7 @@ if __name__ == "__main__":
     fig, ax = plt.subplots(figsize=fsize)
 
     plot_1d_dist(ax, args.datasets, args.param, fit=args.fit)
-    ax.legend(fontsize=0.7*fontsize)
+    ax.legend(fontsize=0.7 * fontsize)
 
     fig.tight_layout()
 
