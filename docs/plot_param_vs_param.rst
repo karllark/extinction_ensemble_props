@@ -99,7 +99,7 @@ One dataset from the Milky Way (GCC09), LMC (G03_lmc), and SMC (G24_smc) are use
    :include-source:
 
    import matplotlib.pyplot as plt
-   from extinction_ensemble_props.plot_1d_distributions import plot_1d_dist
+   from extinction_ensemble_props.plot_param_vs_param import plot_param_vs_param
 
    fontsize = 20
    font = {"size": fontsize}
@@ -117,6 +117,10 @@ One dataset from the Milky Way (GCC09), LMC (G03_lmc), and SMC (G24_smc) are use
    plot_param_vs_param(ax[0, 1], datasets, "C2", "B3")
    plot_param_vs_param(ax[1, 0], datasets, "C2", "C4")
    plot_param_vs_param(ax[1, 1], datasets, "C4", "B3")
+
+   ax[0, 1].get_legend().remove()
+   ax[1, 0].get_legend().remove()
+   ax[1, 1].get_legend().remove()
 
    fig.tight_layout()
    plt.show()
