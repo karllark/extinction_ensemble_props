@@ -70,6 +70,8 @@ def plot_1d_dist(ax, datasets, param, fit=False):
                 x,
                 g(x),
                 label=rf"{clabel} model (m={g.mean.value:.3f}, $\sigma$={g.stddev.value:.3f})",
+                color=ptype[0],
+                alpha=palpha,
             )
 
     ax.set_xlabel(param)
@@ -96,11 +98,16 @@ if __name__ == "__main__":
         default="B3",
         choices=["C1", "C2", "C3", "B3", "C4", "x0", "gamma", "RV", "AV", "EBV"],
     )
+    parser.add_argument(
+        "--fit",
+        help="include Gaussian fit to each dataset distribution",
+        action="store_true",
+    )
     parser.add_argument("--png", help="save figure as a png file", action="store_true")
     parser.add_argument("--pdf", help="save figure as a pdf file", action="store_true")
     args = parser.parse_args()
 
-    fontsize = 20
+    fontsize = 18
     font = {"size": fontsize}
     plt.rc("font", **font)
     plt.rc("lines", linewidth=2)
@@ -111,7 +118,8 @@ if __name__ == "__main__":
     fsize = (12, 8)
     fig, ax = plt.subplots(figsize=fsize)
 
-    plot_1d_dist(ax, args.datasets, args.param)
+    plot_1d_dist(ax, args.datasets, args.param, fit=args.fit)
+    ax.legend(fontsize=0.7*fontsize)
 
     fig.tight_layout()
 

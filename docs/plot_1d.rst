@@ -4,11 +4,27 @@
 
 The datasets that can be plotted are given in :ref:`datasets`.
 
+===========
+Commandline
+===========
+
+1D distributions can be plotted using `plot_1d_dist`.  This can be run from the command line with::
+
+   python plot_1d_dist.py
+
+Options can be determined by appending `--help` to the call.
+
+Example commandline calls are given below with the code examples.
+
 ====
 Code
 ====
 
 A plot of the 1D distribution for a single parameter for single dataset can be done using the code below.
+
+Example 1
+---------
+
 This shows an example for the VCG04 sample of Milky Way sightlines for the FM90 parameter B3.
 
 .. plot::
@@ -33,7 +49,15 @@ This shows an example for the VCG04 sample of Milky Way sightlines for the FM90 
     fig.tight_layout()
     plt.show()
 
-This shows an example for the VCG04, FM07, and GCC09 samples of Milky Way sightlines for the FM90 parameter C2.
+The equivalent commandline call is::
+
+   python extinction_ensemble_props/plot_1d_distributions.py --param B3 --datasets VCG04
+
+Example 3
+---------
+
+This shows an example for the VCG04, FM07, and GCC09 samples of Milky Way sightlines for the FM90 parameter C2
+now including Gaussian fits to each sample.
 
 .. plot::
    :include-source:
@@ -52,20 +76,13 @@ This shows an example for the VCG04, FM07, and GCC09 samples of Milky Way sightl
     fsize = (12, 8)
     fig, ax = plt.subplots(figsize=fsize)
 
-    plot_1d_dist(ax, ["VCG04", "FM07", "GCC09"], "C3")
+    plot_1d_dist(ax, ["VCG04", "FM07", "GCC09"], "C3", fit=True)
 
     fig.tight_layout()
     plt.show()
 
-===========
-Commandline
-===========
+The equivalent commandline call is::
 
-1D distributions can be plotted using `plot_1d_dist`.  This can be run from the command line with::
-
-   python plot_1d_dist.py
-
-Options can be determined by appending `--help` to the call.
-
+   python extinction_ensemble_props/plot_1d_distributions.py --param C2 --datasets VCG04 FM07 GCC09
 
 
