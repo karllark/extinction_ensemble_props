@@ -9,15 +9,19 @@ from astropy.modeling import models, fitting
 from astropy.stats import sigma_clip
 
 from extinction_ensemble_props.utils.fit_full2dcor import lnlike_correlated
+from extinction_ensemble_props.helpers import ptypes
 
 if __name__ == "__main__":
+
+    pdatasets = np.sort(list(ptypes.keys()))
+
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--datasets",
         help="give the datasets to plot",
         nargs="+",
-        default=["gor09", "gor03_lmc", "gor24_smc"],
-        choices=["val04", "gor03_smc", "gor03_lmc", "fit07", "gor09", "gor24_smc"],
+        default=["GCC09", "G03_lmc", "G24_smc"],
+        choices=pdatasets,
     )
     parser.add_argument("--sprops", help="sample properties", action="store_true")
     parser.add_argument(
@@ -52,24 +56,6 @@ if __name__ == "__main__":
     parser.add_argument("--png", help="save figure as a png file", action="store_true")
     parser.add_argument("--pdf", help="save figure as a pdf file", action="store_true")
     args = parser.parse_args()
-
-    # plot types, colors and alphas
-    ptypes = {
-        "val04": ("k.", 0.1, "MW: VCG04"),
-        "gor03_smc": ("m<", 0.25, "SMC: G03"),
-        "gor03_lmc": (("tab:orange", ">"), 0.25, "LMC: G03"),
-        "fit07": ("k+", 0.1, "MW: FM07"),
-        "gor09": ("kD", 0.25, "MW: GCC09"),
-        "gor24_smc": ("b>", 0.5, "SMC: G24"),
-        "gor24_smc_nobump": ("bo", 0.5, "SMC: Weak/absent 2175 A bump"),
-        "gor24_smc_bump": ("rP", 0.5, "SMC: Significant 2175 A bump"),
-        "gor24_smc_flat": ("cs", 0.5, "SMC: Flat"),
-        "gor24_smc_lowebv": (
-            ("tab:brown", "v"),
-            0.5,
-            r"SMC: $E(B-V)_\mathrm{SMC} < 0.1$",
-        ),
-    }
 
     # get the data to plot
     allnames = []
