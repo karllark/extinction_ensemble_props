@@ -30,6 +30,7 @@ extinction curve (.e.g, FM90 parameters [C1, C2, B3, ...]).
 
    Datasets <datasets.rst>
    Plotting 1D distributions <plot_1d.rst>
+   Plotting parameter versus parameter <plot_param_vs_param.rst>
 
 Installation
 ============
