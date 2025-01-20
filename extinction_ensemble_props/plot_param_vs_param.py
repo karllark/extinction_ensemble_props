@@ -139,8 +139,8 @@ def plot_param_vs_param(
                 xlim = ax.get_xlim()
                 ylim = ax.get_ylim()
                 x = np.arange(0.0, xlim[1], 0.01)
-                gdratio = summarystats[f"NHI_{xptags[i]}"][0]
-                gdratio_unc = summarystats[f"NHI_{xptags[i]}"][2]
+                gdratio = summarystats[f"NHI_{xparam}"][0]
+                gdratio_unc = summarystats[f"NHI_{xparam}"][2]
                 line_orig = models.Linear1D(slope=gdratio, intercept=0.0)
                 tlabel = (
                     rf"$N(HI)/{param_labels[xparam]} = {gdratio:.2f} \pm {gdratio_unc:.2f}$"

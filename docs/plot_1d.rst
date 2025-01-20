@@ -86,3 +86,5 @@ The equivalent commandline call is::
    python extinction_ensemble_props/plot_1d_distributions.py --param C2 --datasets VCG04 FM07 GCC09
 
 
+Example 4
+---------
