@@ -1,9 +1,6 @@
-import importlib.resources as importlib_resources
-
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
-from astropy.table import QTable
 from astropy.modeling import models, fitting
 
 from extinction_ensemble_props.helpers import poss_params, param_labels, ptypes, get_dataset
@@ -31,12 +28,13 @@ def plot_1d_dist(ax, datasets, param, fit=False):
     fit : boolean
         set to fit a Gaussian to the distribution [default=False]
     """
-    ref = importlib_resources.files("extinction_ensemble_props") / "data"
-
     for cset in datasets:
         ptype, palpha, clabel = ptypes[cset]
 
         tdata = get_dataset(cset)
+
+        if param not in list(cdata.colnames):
+            raise ValueError(f"param {param} not present in {cset} dataset.")
 
         medval = np.median(tdata[param])
         if hasattr(medval, "value"):

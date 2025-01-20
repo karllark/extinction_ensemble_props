@@ -2,7 +2,7 @@ import importlib.resources as importlib_resources
 import numpy as np
 from astropy.table import QTable
 
-__all__ = ["poss_params", "ptypes", "get_datasets"]
+__all__ = ["poss_params", "param_labels", "ptypes", "get_dataset"]
 
 # possible parameters
 # fmt: off
@@ -23,7 +23,7 @@ param_labels = {
     "C2": "$C_2$ = UV slope",
     "B3": "$B_3$ = bump amplitude",
     "C4": "$C_4$ = FUV rise amplitude",
-    "xo": "$x_o$ = bump center",
+    "x0": "$x_o$ = bump center",
     "gamma": r"$\gamma$ = bump width",
 }
 

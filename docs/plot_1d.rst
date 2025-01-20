@@ -76,7 +76,7 @@ now including Gaussian fits to each sample.
     fsize = (12, 8)
     fig, ax = plt.subplots(figsize=fsize)
 
-    plot_1d_dist(ax, ["VCG04", "FM07", "GCC09"], "C3", fit=True)
+    plot_1d_dist(ax, ["VCG04", "FM07", "GCC09"], "B3", fit=True)
 
     fig.tight_layout()
     plt.show()

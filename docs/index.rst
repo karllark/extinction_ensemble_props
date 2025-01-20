@@ -72,4 +72,7 @@ contributors page on Github
 Reference API
 =============
 
-.. automodapi:: extinction_ensemble_props.plot_1d_distributions
+.. toctree::
+   :maxdepth: 2
+
+   reference_api.rst
