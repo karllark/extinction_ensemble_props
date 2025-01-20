@@ -28,7 +28,8 @@ extinction curve (.e.g, FM90 parameters [C1, C2, B3, ...]).
    :maxdepth: 2
    :caption: Contents:
 
-   Plot 1D distributions <plot_1d.rst>
+   Datasets <datasets.rst>
+   Plotting 1D distributions <plot_1d.rst>
 
 Installation
 ============

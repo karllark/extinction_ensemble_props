@@ -11,12 +11,30 @@ from extinction_ensemble_props.helpers import ptypes
 __all__ = ["plot_1d_dist"]
 
 
-def plot_1d_dist(ax, datasets, param):
+def plot_1d_dist(ax, datasets, param, fit=False):
+    """
+    Plot the 1D distribution of a a single dust property.  Multiple datasets can be plotted together.
+    Optionally, include a Gaussian fit to the distribution of each dataset.
+
+    Parameters
+    ----------
+    ax : matplottlib.axes
+        matplotlib axes object for the plot
+
+    datasets : list
+        list of the datasets to plot
+
+    param : string
+        name of the parameter to be plot
+
+    fit : boolean
+        set to fit a Gaussian to the distribution [default=False]
+    """
+    ref = importlib_resources.files("extinction_ensemble_props") / "data"
 
     for cset in datasets:
         ptype, palpha, clabel = ptypes[cset]
 
-        ref = importlib_resources.files("extinction_ensemble_props") / "data"
         with importlib_resources.as_file(ref) as data_path:
             tdata = QTable.read(
                 f"{data_path}/{cset}_ensemble_params.dat", format="ascii.ipac"
@@ -44,14 +62,15 @@ def plot_1d_dist(ax, datasets, param):
         x = hinfo[1]
         x = 0.5 * (x[0:-1] + x[1:])
 
-        g_init = models.Gaussian1D(amplitude=50.0, mean=medval, stddev=1.0)
-        fit_g = fitting.TRFLSQFitter()
-        g = fit_g(g_init, x, y, maxiter=100000)
-        ax.plot(
-            x,
-            g(x),
-            label=rf"{clabel} model (m={g.mean.value:.3f}, $\sigma$={g.stddev.value:.3f})",
-        )
+        if fit:
+            g_init = models.Gaussian1D(amplitude=50.0, mean=medval, stddev=1.0)
+            fit_g = fitting.TRFLSQFitter()
+            g = fit_g(g_init, x, y, maxiter=100000)
+            ax.plot(
+                x,
+                g(x),
+                label=rf"{clabel} model (m={g.mean.value:.3f}, $\sigma$={g.stddev.value:.3f})",
+            )
 
     ax.set_xlabel(param)
     ax.set_ylabel("#")
@@ -60,33 +79,37 @@ def plot_1d_dist(ax, datasets, param):
 
 
 if __name__ == "__main__":
+
+    pdatasets = np.sort(list(ptypes.keys()))
+
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--datasets",
         help="give the datasets to plot",
         nargs="+",
-        default=["gor09", "gor03_lmc", "gor24_smc"],
-        choices=["val04", "gor03_smc", "gor03_lmc", "fit07", "gor09", "gor24_smc"],
+        default=["GCC09", "G03_lmc", "G24_smc"],
+        choices=pdatasets,
     )
     parser.add_argument(
         "--param",
         help="Parameter to use",
         default="B3",
-        choices=["C1", "C2", "C3", "B3", "C4", "x0", "gamma", "RV"],
+        choices=["C1", "C2", "C3", "B3", "C4", "x0", "gamma", "RV", "AV", "EBV"],
     )
     parser.add_argument("--png", help="save figure as a png file", action="store_true")
     parser.add_argument("--pdf", help="save figure as a pdf file", action="store_true")
     args = parser.parse_args()
 
-    fsize = (12, 8)
-    fig, ax = plt.subplots(figsize=fsize)
-    fontsize = 14
+    fontsize = 20
     font = {"size": fontsize}
     plt.rc("font", **font)
     plt.rc("lines", linewidth=2)
     plt.rc("axes", linewidth=2)
     plt.rc("xtick.major", width=2)
     plt.rc("ytick.major", width=2)
+
+    fsize = (12, 8)
+    fig, ax = plt.subplots(figsize=fsize)
 
     plot_1d_dist(ax, args.datasets, args.param)
 
