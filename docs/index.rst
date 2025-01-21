@@ -28,7 +28,9 @@ extinction curve (.e.g, FM90 parameters [C1, C2, B3, ...]).
    :maxdepth: 2
    :caption: Contents:
 
-   Plot 1D distributions <plot_1d.rst>
+   Datasets <datasets.rst>
+   Plotting 1D distributions <plot_1d.rst>
+   Plotting parameter versus parameter <plot_param_vs_param.rst>
 
 Installation
 ============
@@ -71,4 +73,7 @@ contributors page on Github
 Reference API
 =============
 
-.. automodapi:: extinction_ensemble_props.plot_1d_distributions
+.. toctree::
+   :maxdepth: 2
+
+   reference_api.rst

@@ -40,7 +40,7 @@ numpydoc_show_class_members = False
 # html_static_path = ['_static']
 
 html_theme_options = {
-    'logotext1': 'dust_extinction',  # white,  semi-bold
+    'logotext1': 'extinction_ensemble_props',  # white,  semi-bold
     'logotext2': '',  # orange, light
     'logotext3': ':docs'   # white,  light
     }
