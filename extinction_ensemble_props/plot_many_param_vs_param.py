@@ -145,7 +145,12 @@ if __name__ == "__main__":
             tax = ax[px, py]
 
         plot_param_vs_param(
-            tax, args.datasets, xptags[i], yptags[i], fit=fitlines[i] & args.fit, nouncs=args.nouncs
+            tax,
+            args.datasets,
+            xptags[i],
+            yptags[i],
+            fit=fitlines[i] & args.fit,
+            nouncs=args.nouncs,
         )
 
         if i != 0:
