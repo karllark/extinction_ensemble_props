@@ -33,13 +33,25 @@ ptypes = {
     "G03_smc": ("m<", 0.5, "SMC: G03"),
     "G03_lmc": (("tab:orange", ">"), 0.5, "LMC: G03"),
     "FM07": ("k+", 0.5, "MW: FM07"),
-    "GCC09": ("kD", 0.75, "MW: GCC09"),
+    "GCC09": ("kD", 0.5, "MW: GCC09"),
     "G24_smc": ("b>", 0.5, "SMC: G24"),
     "G24_smc_nobump": ("bo", 0.5, "SMC: Weak/absent 2175 A bump"),
     "G24_smc_bump": ("rP", 0.5, "SMC: Significant 2175 A bump"),
     "G24_smc_flat": ("cs", 0.5, "SMC: Flat"),
+    "C25_m31": ("rs", 0.75, "M31: C25"),
+    "G25_wisci": ("bo", 0.5, "MW: G25 WISCI"),
 }
 
+# ptypes = {
+#     "G03_lmc": (("tab:orange", ">"), 0.1, "LMC: G03"),
+#     "GCC09": ("kD", 0.1, "MW: GCC09"),
+#     "G24_smc": ("b<", 0.1, "SMC: G24"),
+#     "C25_m31": ("rs", 0.75, "M31"),
+#     "C25_m31_blue": ("bs", 0.75, "M31: Blue"),
+#     "C25_m31_green": ("go", 0.75, "M31: Green"),
+#     "C25_m31_red": ("rD", 0.75, "M31: Red"),
+#     "C25_m31_black": ("kv", 0.75, "M31: Black"),
+# }
 
 def get_dataset(cset):
     """
