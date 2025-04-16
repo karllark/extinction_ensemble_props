@@ -30,6 +30,14 @@ if __name__ == "__main__":
     parser.add_argument(
         "--fm90main", help="only plot the main FM90 parameters", action="store_true"
     )
+    parser.add_argument(
+        "--fm90main_noc1", help="only plot the main FM90 parameters (Av vs Rv instead of C1 vs C2)",
+        action="store_true"
+    )
+    parser.add_argument(
+        "--fm90_noc1", help="plot FM90 parameters (Av vs Rv instead of C1 vs C2)",
+        action="store_true"
+    )
     parser.add_argument("--ebv", help="plot FM90 versus E(B-V)", action="store_true")
     parser.add_argument("--av", help="plot FM90 versus A(V)", action="store_true")
     parser.add_argument("--nhi", help="plot FM90 versus N(HI)", action="store_true")
@@ -121,6 +129,19 @@ if __name__ == "__main__":
         fitlines = [True] * nrows * ncols
         xptags = ["C2", "C2", "C2", "C4"]
         yptags = ["C1", "B3", "C4", "B3"]
+    elif args.fm90main_noc1:
+        ostr = "fm90main_noc1"
+        fsize = (12, 10)
+        nrows = 2
+        ncols = 2
+        pi = [0, 1, 2, 3]
+        fitlines = [True] * nrows * ncols
+        xptags = ["AV", "C2", "C2", "C4"]
+        yptags = ["RV", "B3", "C4", "B3"]
+    elif args.fm90_noc1:
+        ostr = "fm90_noc1"
+        xptags = ["AV", "C2", "C2", "C2", "B3", "x0"]
+        yptags = ["RV", "B3", "C4", "x0", "gamma", "gamma"]
     else:  # plot fm90 vs fm90
         ostr = "fm90"
         xptags = ["C2", "C2", "C2", "C2", "B3", "x0"]

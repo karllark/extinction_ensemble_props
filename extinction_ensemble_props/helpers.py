@@ -96,14 +96,14 @@ def get_dataset(cset):
         tdata["NHI"] /= 1e21
         tdata["NHI_unc"] /= 1e21
 
-    if ("NHI" in tdata.colnames) & ("NHI_EBV" not in tdata.colnames):
+    if ("NHI" in tdata.colnames) & ("EBV" in tdata.colnames) & ("NHI_EBV" not in tdata.colnames):
         tdata["NHI_EBV"] = tdata["NHI"] / tdata["EBV"]
         tdata["NHI_EBV_unc"] = (tdata["NHI_unc"] / tdata["NHI"]) ** 2 + (
             tdata["EBV_unc"] / tdata["EBV"]
         ) ** 2
         tdata["NHI_EBV_unc"] = tdata["NHI_EBV"] * np.sqrt(tdata["NHI_EBV_unc"])
 
-    if ("NHI" in tdata.colnames) & ("NHI_AV" not in tdata.colnames):
+    if ("NHI" in tdata.colnames) & ("AV" in tdata.colnames) & ("NHI_AV" not in tdata.colnames):
         tdata["NHI_AV"] = tdata["NHI"] / tdata["AV"]
         tdata["NHI_AV_unc"] = (tdata["NHI_unc"] / tdata["NHI"]) ** 2 + (
             tdata["AV_unc"] / tdata["AV"]
