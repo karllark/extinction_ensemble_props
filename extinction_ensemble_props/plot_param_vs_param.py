@@ -84,15 +84,18 @@ def plot_param_vs_param(
         xvals = np.concatenate((xvals, xdata))
         yvals = np.concatenate((yvals, ydata))
 
+        # if both zero, then not good data
+        gvals = (xdata != 0.0) & (ydata != 0.0)
+
         # check if uncertainties are included
         if f"{xparam}_unc" in cdata.colnames:
-            xdata_unc = np.array(cdata[f"{xparam}_unc"].data)
+            xdata_unc = np.array(cdata[f"{xparam}_unc"].data)[gvals]
             # for fitting
             xvals_unc = np.concatenate((xvals_unc, xdata_unc))
         else:
             xdata_unc = None
         if f"{yparam}_unc" in cdata.colnames:
-            ydata_unc = np.array(cdata[f"{yparam}_unc"].data)
+            ydata_unc = np.array(cdata[f"{yparam}_unc"].data)[gvals]
             # for fitting
             yvals_unc = np.concatenate((yvals_unc, ydata_unc))
         else:
@@ -105,14 +108,11 @@ def plot_param_vs_param(
         colstr = ptype[0]
         symstr = ptype[1]
 
-        # if both zero, then not good data
-        gvals = (xdata != 0.0) & (ydata != 0.0)
-
         ax.errorbar(
             xdata[gvals],
             ydata[gvals],
-            xerr=xdata_unc[gvals],
-            yerr=ydata_unc[gvals],
+            xerr=xdata_unc,
+            yerr=ydata_unc,
             color=colstr,
             marker=symstr,
             linestyle="",
