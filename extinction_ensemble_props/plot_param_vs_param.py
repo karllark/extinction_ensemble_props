@@ -77,22 +77,25 @@ def plot_param_vs_param(
 
         ptype, palpha, plabel = ptypes[cname]
 
-        xdata = cdata[xparam].data
-        ydata = cdata[yparam].data
+        xdata = np.array(cdata[xparam].data)
+        ydata = np.array(cdata[yparam].data)
 
         # for fitting
         xvals = np.concatenate((xvals, xdata))
         yvals = np.concatenate((yvals, ydata))
 
+        # if both zero, then not good data
+        gvals = (xdata != 0.0) & (ydata != 0.0)
+
         # check if uncertainties are included
         if f"{xparam}_unc" in cdata.colnames:
-            xdata_unc = cdata[f"{xparam}_unc"].data
+            xdata_unc = np.array(cdata[f"{xparam}_unc"].data)[gvals]
             # for fitting
             xvals_unc = np.concatenate((xvals_unc, xdata_unc))
         else:
             xdata_unc = None
         if f"{yparam}_unc" in cdata.colnames:
-            ydata_unc = cdata[f"{yparam}_unc"].data
+            ydata_unc = np.array(cdata[f"{yparam}_unc"].data)[gvals]
             # for fitting
             yvals_unc = np.concatenate((yvals_unc, ydata_unc))
         else:
@@ -106,8 +109,8 @@ def plot_param_vs_param(
         symstr = ptype[1]
 
         ax.errorbar(
-            xdata,
-            ydata,
+            xdata[gvals],
+            ydata[gvals],
             xerr=xdata_unc,
             yerr=ydata_unc,
             color=colstr,
