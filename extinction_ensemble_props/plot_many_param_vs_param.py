@@ -93,13 +93,11 @@ if __name__ == "__main__":
         show_gd = [False, True]
     elif args.gdprops:
         ostr = "gdprops"
-        fsize = (12, 10)
         nrows = 2
-        ncols = 2
-        pi = [0, 1, 2, 3]
-        xptags = ["AV", "C2", "B3", "C4"]
-        yptags = ["NHI_AV", "NHI_AV", "NHI_AV", "NHI_AV"]
-        fitlines = [False, True, True, True]
+        ncols = 3
+        xptags = ["AV", "C2", "B3", "C4", "gamma", "x0"]
+        yptags = ["NHI_AV", "NHI_AV", "NHI_AV", "NHI_AV", "NHI_AV", "NHI_AV"]
+        fitlines = [False, True, True, True, True, True]
     elif args.ebv:
         ostr = "ebv"
         npts = len(yptags)
@@ -140,12 +138,12 @@ if __name__ == "__main__":
         yptags = ["RV", "B3", "C4", "B3"]
     elif args.fm90_noc1:
         ostr = "fm90_noc1"
-        xptags = ["AV", "C2", "C2", "C2", "B3", "x0"]
-        yptags = ["RV", "B3", "C4", "x0", "gamma", "gamma"]
+        xptags = ["AV", "C2", "C2", "C4", "gamma", "gamma"]
+        yptags = ["RV", "B3", "C4", "B3", "B3", "x0"]
     else:  # plot fm90 vs fm90
         ostr = "fm90"
-        xptags = ["C2", "C2", "C2", "C2", "B3", "x0"]
-        yptags = ["C1", "B3", "C4", "x0", "gamma", "gamma"]
+        xptags = ["C2", "C2", "C2", "C2", "gamma", "gamma"]
+        yptags = ["C1", "B3", "C4", "x0", "B3", "x0"]
 
     # make the plots
     fontsize = 14
