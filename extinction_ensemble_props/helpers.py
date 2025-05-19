@@ -32,6 +32,8 @@ ptypes = {
     "VCG04": ("k.", 0.25, "MW: VCG04"),
     "G03_smc": ("m<", 0.5, "SMC: G03"),
     "G03_lmc": (("tab:orange", ">"), 0.5, "LMC: G03"),
+    "G03_lmc_ave": (("tab:orange", ">"), 0.5, "LMC Avg: G03"),
+    "G03_lmc_lmc2": ("cs", 0.5, "LMC LMC2/30Dor: G03"),
     "FM07": ("k+", 0.5, "MW: FM07"),
     "GCC09": ("kD", 0.5, "MW: GCC09"),
     "G24_smc": ("b>", 0.5, "SMC: G24"),

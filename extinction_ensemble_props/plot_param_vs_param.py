@@ -24,6 +24,7 @@ def plot_param_vs_param(
     nouncs=False,
     showstats=False,
     show_gd=False,
+    fontsize=16,
 ):
     """
     Plot xparam versus yparam for the specific datasets.
@@ -219,7 +220,7 @@ def plot_param_vs_param(
     ax.set_xlabel(param_labels[xparam])
     ax.set_ylabel(param_labels[yparam])
 
-    ax.legend()
+    ax.legend(fontsize=0.7 * fontsize)
 
 
 if __name__ == "__main__":

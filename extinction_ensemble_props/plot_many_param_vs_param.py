@@ -170,6 +170,7 @@ if __name__ == "__main__":
             yptags[i],
             fit=fitlines[i] & args.fit,
             nouncs=args.nouncs,
+            fontsize=fontsize,
         )
 
         if i != 0:
