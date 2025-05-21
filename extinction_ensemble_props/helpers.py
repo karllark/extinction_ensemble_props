@@ -40,8 +40,9 @@ ptypes = {
     "G24_smc_nobump": ("bo", 0.5, "SMC: Weak/absent 2175 A bump"),
     "G24_smc_bump": ("rP", 0.5, "SMC: Significant 2175 A bump"),
     "G24_smc_flat": ("cs", 0.5, "SMC: Flat"),
-    "C25_m31": ("rs", 0.75, "M31: C25"),
+    "C25_m31": ("cs", 0.75, "M31: C25"),
     "G25_wisci": ("bo", 0.5, "MW: G25 WISCI"),
+    "G25_m33": ("rD", 0.75, "M33: G25"),
 }
 
 # ptypes = {
