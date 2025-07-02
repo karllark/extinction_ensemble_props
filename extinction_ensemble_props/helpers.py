@@ -12,19 +12,19 @@ poss_params = ["AV", "EBV", "RV", "IRV", "NHI", "NHI_EBV", "NHI_AV",
 
 # parameter labels
 param_labels = {
-    "EBV": "$E(B-V)$",
-    "AV": "$A(V)$",
+    "EBV": "$E(B-V)$ [mag]",
+    "AV": "$A(V)$ [mag]",
     "RV": "$R(V)$",
     "IRV": "1/$R(V)$",
-    "NHI": "$N(HI)$ [$10^{21}~H~cm^{-2}$]",
-    "NHI_EBV": "$N(HI)/E(B-V)$ [$10^{21}~H~cm^{-2}~mag^{-1}$]",
-    "NHI_AV": "$N(HI)/A(V)$ [$10^{21}~H~cm^{-2}~H~cm^{-2}~mag^{-1}$]",
+    "NHI": r"$N(HI)$ [$10^{21}~H~cm^{-2}$]",
+    "NHI_EBV": r"$N(HI)/E(B-V)$ [$10^{21}~H~cm^{-2}~mag^{-1}$]",
+    "NHI_AV": r"$N(HI)/A(V)$ [$10^{21}~H~cm^{-2}~mag^{-1}$]",
     "C1": "$C_1$ = UV intercept",
     "C2": "$C_2$ = UV slope",
     "B3": "$B_3$ = bump amplitude",
     "C4": "$C_4$ = FUV rise amplitude",
-    "x0": "$x_o$ = bump center",
-    "gamma": r"$\gamma$ = bump width",
+    "x0": r"$x_o$ = bump center [$\mu \mathrm{m}^{-1}$]",
+    "gamma": r"$\gamma$ = bump width [$\mu \mathrm{m}^{-1}$]",
 }
 
 # plot types, colors, alphas, and legend names
@@ -36,12 +36,13 @@ ptypes = {
     "G03_lmc_lmc2": ("cs", 0.5, "LMC LMC2/30Dor: G03"),
     "FM07": ("k+", 0.5, "MW: FM07"),
     "GCC09": ("kD", 0.5, "MW: GCC09"),
-    "G24_smc": ("b>", 0.5, "SMC: G24"),
+    "G24_smc": ("b^", 0.5, "SMC: G24"),
     "G24_smc_nobump": ("bo", 0.5, "SMC: Weak/absent 2175 A bump"),
     "G24_smc_bump": ("rP", 0.5, "SMC: Significant 2175 A bump"),
     "G24_smc_flat": ("cs", 0.5, "SMC: Flat"),
-    "C25_m31": ("rs", 0.75, "M31: C25"),
+    "C25_m31": ("ro", 0.75, "M31: C25"),
     "G25_wisci": ("bo", 0.5, "MW: G25 WISCI"),
+    "G25_m33": ("rD", 0.75, "M33: G25"),
 }
 
 # ptypes = {
@@ -98,18 +99,28 @@ def get_dataset(cset):
         tdata["NHI"] /= 1e21
         tdata["NHI_unc"] /= 1e21
 
-    if ("NHI" in tdata.colnames) & ("EBV" in tdata.colnames) & ("NHI_EBV" not in tdata.colnames):
+    if (
+        ("NHI" in tdata.colnames)
+        & ("EBV" in tdata.colnames)
+        & ("NHI_EBV" not in tdata.colnames)
+    ):
         tdata["NHI_EBV"] = tdata["NHI"] / tdata["EBV"]
         tdata["NHI_EBV_unc"] = (tdata["NHI_unc"] / tdata["NHI"]) ** 2 + (
             tdata["EBV_unc"] / tdata["EBV"]
         ) ** 2
         tdata["NHI_EBV_unc"] = tdata["NHI_EBV"] * np.sqrt(tdata["NHI_EBV_unc"])
 
-    if ("NHI" in tdata.colnames) & ("AV" in tdata.colnames) & ("NHI_AV" not in tdata.colnames):
-        tdata["NHI_AV"] = tdata["NHI"] / tdata["AV"]
-        tdata["NHI_AV_unc"] = (tdata["NHI_unc"] / tdata["NHI"]) ** 2 + (
-            tdata["AV_unc"] / tdata["AV"]
-        ) ** 2
+    if (
+        ("NHI" in tdata.colnames)
+        & ("AV" in tdata.colnames)
+        & ("NHI_AV" not in tdata.colnames)
+    ):
+        tdata["NHI_AV"] = tdata["NHI"] / tdata["AV"].value
+        tdata["NHI_AV_unc"] = 0.0 * tdata["NHI_AV"]
+        gvals = tdata["NHI"] > 0.0
+        tdata["NHI_AV_unc"][gvals] = (
+            tdata["NHI_unc"][gvals] / tdata["NHI"][gvals]
+        ) ** 2 + (tdata["AV_unc"][gvals] / tdata["AV"][gvals]) ** 2
         tdata["NHI_AV_unc"] = tdata["NHI_AV"] * np.sqrt(tdata["NHI_AV_unc"])
 
     return tdata
