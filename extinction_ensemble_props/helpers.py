@@ -36,6 +36,7 @@ ptypes = {
     "G03_lmc_lmc2": ("cs", 0.5, "LMC LMC2/30Dor: G03"),
     "FM07": ("k+", 0.5, "MW: FM07"),
     "GCC09": ("kD", 0.5, "MW: GCC09"),
+    "C15_m31": (("tab:purple", "<"), 0.75, "M31: C15"),
     "G24_smc": ("b^", 0.5, "SMC: G24"),
     "G24_smc_nobump": ("bo", 0.5, "SMC: Weak/absent 2175 A bump"),
     "G24_smc_bump": ("rP", 0.5, "SMC: Significant 2175 A bump"),

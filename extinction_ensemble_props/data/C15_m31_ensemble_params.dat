@@ -1,0 +1,8 @@
+|                       name|        AV|      AV_unc|       RV|     RV_unc|          NHI|      NHI_unc|       C2|     C2_unc|       C3|     C3_unc|          C4|     C4_unc|       x0|     x0_unc|     gamma|  gamma_unc|
+|                       char|     float|       float|    float|      float|        float|        float|    float|      float|    float|      float|       float|      float|    float|      float|     float|      float|
+|                           |          |            |         |           |             |             |         |           |         |           |            |           |         |           |          |           |
+|                       null|      null|        null|     null|       null|         null|         null|     null|       null|     null|       null|        null|       null|     null|       null|      null|       null|
+ j003944.71+402056.2               1.49         0.54      4.25        1.66      3.51e+21       2.25e+21     0.64        0.10      3.44        1.10         0.41        0.08      4.58        0.03       1.05        0.14
+ j003958.22+402329.0               1.06         0.42      4.32        1.81      5.48e+21       1.93e+21     0.98        0.24      4.16        1.31        -0.01        0.09      4.63        0.03       1.19        0.17
+ j004034.61+404326.1               1.28         0.42      4.85        1.66      6.40e+21       1.73e+21     1.00        0.19      4.07        1.61        -0.13        0.06      4.63        0.02       1.12        0.19
+ j004412.17+413324.2               1.64         0.55      4.01        1.61      1.10e+21       1.09e+21     1.28        0.17      3.76        1.49         0.05        0.18      4.61        0.04       1.16        0.26
