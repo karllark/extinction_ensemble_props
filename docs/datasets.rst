@@ -200,7 +200,7 @@ C15_m31: `Clayton et al. 2015, ApJ, 815, 14
     plt.show()
 
 
-C25_m31: Clayton et al. 2025, ApJ, submitted
+C25_m31: Clayton et al. 2025, ApJ, in press
 
 .. plot::
 
@@ -224,6 +224,30 @@ C25_m31: Clayton et al. 2025, ApJ, submitted
     fig.tight_layout()
     plt.show()
 
+
+G25_m33: Gordon et al. 2025, ApJ, submitted
+
+.. plot::
+
+    import matplotlib.pyplot as plt
+    from extinction_ensemble_props.plot_1d_distributions import plot_1d_dist
+
+    fontsize = 20
+    font = {"size": fontsize}
+    plt.rc("font", **font)
+    plt.rc("lines", linewidth=2)
+    plt.rc("axes", linewidth=2)
+    plt.rc("xtick.major", width=2)
+    plt.rc("ytick.major", width=2)
+
+    fsize = (12, 8)
+    fig, ax = plt.subplots(nrows=2, figsize=fsize)
+
+    plot_1d_dist(ax[0], ["G25_m33"], "AV", fit=True)
+    plot_1d_dist(ax[1], ["G25_m33"], "RV", fit=True)
+
+    fig.tight_layout()
+    plt.show()
 
 ======
 Custom
