@@ -7,7 +7,7 @@ __all__ = ["poss_params", "param_labels", "ptypes", "get_dataset"]
 # possible parameters
 # fmt: off
 poss_params = ["AV", "EBV", "RV", "IRV", "NHI", "NHI_EBV", "NHI_AV",
-               "C1", "C2", "C3", "B3", "C4", "x0", "gamma"]
+               "C1", "C2", "C3", "B3", "C4", "x0", "gamma", "metallicity"]
 # fmt: on
 
 # parameter labels
@@ -25,6 +25,7 @@ param_labels = {
     "C4": "$C_4$ = FUV rise amplitude",
     "x0": r"$x_o$ = bump center [$\mu \mathrm{m}^{-1}$]",
     "gamma": r"$\gamma$ = bump width [$\mu \mathrm{m}^{-1}$]",
+    "metallicity": r"Z/Z$_\odot$",
 }
 
 # plot types, colors, alphas, and legend names
