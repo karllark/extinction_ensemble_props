@@ -3,12 +3,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 from astropy.modeling import models, fitting
 
-from extinction_ensemble_props.helpers import poss_params, param_labels, ptypes, get_dataset
+from extinction_ensemble_props.helpers import (
+    poss_params,
+    param_labels,
+    ptypes,
+    get_dataset,
+)
 
 __all__ = ["plot_1d_dist"]
 
 
-def plot_1d_dist(ax, datasets, param, fit=False):
+def plot_1d_dist(ax, datasets, param, fit=False, norm=False):
     """
     Plot the 1D distribution of a a single dust property.
     Multiple datasets can be plotted together.
@@ -27,6 +32,9 @@ def plot_1d_dist(ax, datasets, param, fit=False):
 
     fit : boolean
         set to fit a Gaussian to the distribution [default=False]
+
+    norm : boolean
+        subtract the median and normalize by the uncertainty
     """
     for cset in datasets:
         ptype, palpha, clabel = ptypes[cset]
@@ -40,8 +48,14 @@ def plot_1d_dist(ax, datasets, param, fit=False):
         if hasattr(medval, "value"):
             medval = medval.value
 
+        if norm:
+            hvals = (tdata[param].value - medval) / tdata[f"{param}_unc"].value
+            medval = 0.0
+        else:
+            hvals = tdata[param]
+
         hinfo = ax.hist(
-            tdata[param], bins=20, color=ptype[0], label=clabel, alpha=palpha
+            hvals, bins=20, color=ptype[0], label=clabel, alpha=palpha
         )
         y = hinfo[0]
         x = hinfo[1]
@@ -59,7 +73,10 @@ def plot_1d_dist(ax, datasets, param, fit=False):
                 alpha=palpha,
             )
 
-    ax.set_xlabel(param_labels[param])
+    if norm:
+        ax.set_xlabel(f"({param_labels[param]} - med) / unc")
+    else:
+        ax.set_xlabel(param_labels[param])
     ax.set_ylabel("#")
 
     ax.legend()
@@ -88,6 +105,11 @@ if __name__ == "__main__":
         help="include Gaussian fit to each dataset distribution",
         action="store_true",
     )
+    parser.add_argument(
+        "--norm",
+        help="Subtract the median and normalize by the uncertainty",
+        action="store_true",
+    )
     parser.add_argument("--png", help="save figure as a png file", action="store_true")
     parser.add_argument("--pdf", help="save figure as a pdf file", action="store_true")
     args = parser.parse_args()
@@ -103,7 +125,7 @@ if __name__ == "__main__":
     fsize = (12, 8)
     fig, ax = plt.subplots(figsize=fsize)
 
-    plot_1d_dist(ax, args.datasets, args.param, fit=args.fit)
+    plot_1d_dist(ax, args.datasets, args.param, fit=args.fit, norm=args.norm)
     ax.legend(fontsize=0.7 * fontsize)
 
     fig.tight_layout()

@@ -29,12 +29,12 @@ param_labels = {
 
 # plot types, colors, alphas, and legend names
 ptypes = {
-    "VCG04": ("k.", 0.25, "MW: VCG04"),
+    "VCG04": (("lightcoral", "."), 0.25, "MW: VCG04"),
     "G03_smc": ("m<", 0.25, "SMC: G03"),
     "G03_lmc": (("tab:orange", ">"), 0.25, "LMC: G03"),
     "G03_lmc_ave": (("tab:orange", ">"), 0.25, "LMC Avg: G03"),
     "G03_lmc_lmc2": ("cs", 0.25, "LMC LMC2/30Dor: G03"),
-    "FM07": ("k+", 0.25, "MW: FM07"),
+    "FM07": (("darkorange", "+"), 0.25, "MW: FM07"),
     "GCC09": ("kD", 0.25, "MW: GCC09"),
     "C15_m31": (("tab:purple", "<"), 0.25, "M31: C15"),
     "G24_smc": ("b^", 0.25, "SMC: G24"),
