@@ -1,6 +1,7 @@
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.ticker import ScalarFormatter
 import scipy.optimize as op
 from astropy.modeling import models, fitting
 
@@ -212,10 +213,22 @@ def plot_param_vs_param(
 
         ax.set_ylim(ylim)
 
-    if xparam in ["NHI_EBV", "NHI_AV"]:
+    if (xparam == "metallicity") & (yparam == "NHI_AV"):
+        modx = np.linspace(min(xvals), max(xvals), 100)
+        mody = 1.6 / modx
+        ax.plot(modx, mody, "k--")
+
+    if xparam in ["NHI_EBV", "NHI_AV", "metallicity"]:
         ax.set_xscale("log")
-    if yparam in ["NHI_EBV", "NHI_AV"]:
+    if yparam in ["NHI_EBV", "NHI_AV", "metallicity"]:
         ax.set_yscale("log")
+
+    if xparam == "metallicity":
+        ax.xaxis.set_major_formatter(ScalarFormatter())
+        ax.xaxis.set_minor_formatter(ScalarFormatter())
+    if yparam == "metallicity":
+        ax.yaxis.set_major_formatter(ScalarFormatter())
+        ax.yaxis.set_minor_formatter(ScalarFormatter())
 
     ax.set_xlabel(param_labels[xparam])
     ax.set_ylabel(param_labels[yparam])
@@ -271,7 +284,7 @@ if __name__ == "__main__":
     plt.rc("xtick.major", width=2)
     plt.rc("ytick.major", width=2)
 
-    fig, ax = plt.subplots(figsize=(12, 8))
+    fig, ax = plt.subplots(figsize=(7, 6))
 
     plot_param_vs_param(
         ax,
