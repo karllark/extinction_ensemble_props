@@ -25,7 +25,10 @@ if __name__ == "__main__":
         "--spropsav", help="sample properties versus av", action="store_true"
     )
     parser.add_argument(
-        "--gdprops", help="N(HI)/E(B-V) properties", action="store_true"
+        "--gdprops", help="N(HI)/A(V) properties", action="store_true"
+    )
+    parser.add_argument(
+        "--gdprops_wmet", help="N(HI)/A(V) properties with metallicity vs B3", action="store_true"
     )
     parser.add_argument(
         "--fm90main", help="only plot the main FM90 parameters", action="store_true"
@@ -97,6 +100,13 @@ if __name__ == "__main__":
         ncols = 3
         xptags = ["AV", "C2", "B3", "C4", "gamma", "x0"]
         yptags = ["NHI_AV", "NHI_AV", "NHI_AV", "NHI_AV", "NHI_AV", "NHI_AV"]
+        fitlines = [False, True, True, True, True, True]
+    elif args.gdprops_wmet:
+        ostr = "gdprops_wmet"
+        nrows = 2
+        ncols = 3
+        xptags = ["B3", "C2", "B3", "C4", "gamma", "x0"]
+        yptags = ["metallicity", "NHI_AV", "NHI_AV", "NHI_AV", "NHI_AV", "NHI_AV"]
         fitlines = [False, True, True, True, True, True]
     elif args.ebv:
         ostr = "ebv"
