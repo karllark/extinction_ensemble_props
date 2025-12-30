@@ -17,6 +17,12 @@ if __name__ == "__main__":
         default=["GCC09", "G03_lmc", "G24_smc"],
         choices=pdatasets,
     )
+    parser.add_argument(
+        "--emphasize_dataset",
+        help="emphasize one dataset in plots",
+        default=None,
+        choices=pdatasets,
+    )
     parser.add_argument("--sprops", help="sample properties", action="store_true")
     parser.add_argument(
         "--spropsebv", help="sample properties versus ebv", action="store_true"
@@ -181,6 +187,7 @@ if __name__ == "__main__":
             fit=fitlines[i] & args.fit,
             nouncs=args.nouncs,
             fontsize=fontsize,
+            emphasize_dataset=args.emphasize_dataset,
         )
 
         if i != 0:

@@ -26,6 +26,7 @@ def plot_param_vs_param(
     showstats=False,
     show_gd=False,
     fontsize=16,
+    emphasize_dataset=None,
 ):
     """
     Plot xparam versus yparam for the specific datasets.
@@ -55,6 +56,13 @@ def plot_param_vs_param(
 
     show_gd : boolean
         set to show the gas-to-dust ratio if xparam/yparam are appropriate [default=False]
+
+    fontsize : int
+        base fontsize to use
+
+    emphasize_dataset : string
+        give the name of a dataset to emphasize with increased alpha,
+        other datasets will have a low alpha
     """
 
     # for fitting
@@ -78,6 +86,13 @@ def plot_param_vs_param(
         # ebv_unc = np.concatenate((ebv_unc, cdata["EBV_unc"].data))
 
         ptype, palpha, plabel = ptypes[cname]
+
+        # emphaize one dataset of requested
+        if emphasize_dataset is not None:
+            if cname == emphasize_dataset:
+                palpha = 0.75
+            else:
+                palpha = 0.25
 
         xdata = np.array(cdata[xparam].data)
         ydata = np.array(cdata[yparam].data)
@@ -249,6 +264,12 @@ if __name__ == "__main__":
         choices=pdatasets,
     )
     parser.add_argument(
+        "--emphasize_dataset",
+        help="emphasize one dataset in plots",
+        default=None,
+        choices=pdatasets,
+    )
+    parser.add_argument(
         "--xparam",
         help="Parameter for x-axis",
         default="B3",
@@ -294,6 +315,7 @@ if __name__ == "__main__":
         fit=args.fit,
         nouncs=args.nouncs,
         showstats=args.showstats,
+        emphasize_dataset=args.emphasize_dataset,
     )
 
     fig.tight_layout()

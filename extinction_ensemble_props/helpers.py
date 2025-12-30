@@ -44,7 +44,7 @@ ptypes = {
     "G24_smc_bump": ("rP", basealpha, "SMC: Significant 2175 A bump"),
     "G24_smc_flat": ("cs", basealpha, "SMC: G24 Flat"),
     "C25_m31": ("go", basealpha, "M31: C25"),
-    "G25_m33": ("rD", basealpha, "M33: G25"),
+    "G26_m33": ("rD", basealpha, "M33: G26"),
     "G25_wisci": ("bo", basealpha, "MW: G25 WISCI"),
 }
 
