@@ -225,7 +225,7 @@ C25_m31: Clayton et al. 2025, ApJ, in press
     plt.show()
 
 
-G25_m33: Gordon et al. 2025, ApJ, submitted
+G26_m33: Gordon et al. 2026, ApJ, submitted
 
 .. plot::
 
@@ -243,8 +243,8 @@ G25_m33: Gordon et al. 2025, ApJ, submitted
     fsize = (12, 8)
     fig, ax = plt.subplots(nrows=2, figsize=fsize)
 
-    plot_1d_dist(ax[0], ["G25_m33"], "AV", fit=True)
-    plot_1d_dist(ax[1], ["G25_m33"], "RV", fit=True)
+    plot_1d_dist(ax[0], ["G26_m33"], "AV", fit=True)
+    plot_1d_dist(ax[1], ["G26_m33"], "RV", fit=True)
 
     fig.tight_layout()
     plt.show()
