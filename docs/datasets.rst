@@ -200,7 +200,7 @@ C15_m31: `Clayton et al. 2015, ApJ, 815, 14
     plt.show()
 
 
-C25_m31: Clayton et al. 2025, ApJ, in press
+C25_m31: Clayton et al. 2025, ApJ, 989, 61
 
 .. plot::
 
