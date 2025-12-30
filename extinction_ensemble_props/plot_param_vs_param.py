@@ -61,7 +61,7 @@ def plot_param_vs_param(
         base fontsize to use
 
     emphasize_dataset : string
-        give the name of a dataset to emphasize with increased alpha, 
+        give the name of a dataset to emphasize with increased alpha,
         other datasets will have a low alpha
     """
 
